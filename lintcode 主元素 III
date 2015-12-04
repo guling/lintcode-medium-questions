@@ -1,0 +1,35 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/majority-number-iii/
+主元素 III 查看运行结果 
+
+给定一个整型数组，找到主元素，它在数组中的出现次数严格大于数组元素个数的1/k。
+
+您在真实的面试中是否遇到过这个题？ Yes
+样例
+给出数组 [3,1,2,3,2,3,3,4,4,4] ，和 k = 3，返回 3
+
+注意
+数组中只有唯一的主元素
+
+挑战
+要求时间复杂度为O(n)，空间复杂度为O(k)
+
+class Solution {
+public:
+    /**
+     * @param nums: A list of integers
+     * @param k: As described
+     * @return: The majority number
+     */
+    int majorityNumber(vector<int> nums, int k) {
+        // write your code here
+        map<int, int> mp;
+        for(int i=0; i<nums.size(); ++i)
+            mp[nums[i]]++;
+        int ans, tmp=0;
+        for(map<int,int>::iterator it = mp.begin(); it!=mp.end(); ++it)
+            if(tmp < it->second)
+                tmp = it->second, ans = it->first;
+        return ans;
+    }
+};
+
