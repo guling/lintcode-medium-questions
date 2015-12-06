@@ -1,0 +1,42 @@
+N皇后问题 II 查看运行结果 
+
+根据n皇后问题，现在返回n皇后不同的解决方案的数量而不是具体的放置布局。
+
+样例
+比如n=4，存在2种解决方案
+
+class Solution {
+public:
+    /**
+     * Calculate the total number of distinct N-Queen solutions.
+     * @param n: The number of queens.
+     * @return: The total number of distinct solutions.
+     */
+    
+    int col[100];
+    int vis[2][200];
+    int ans = 0;
+    
+    void dfs(int cur, int n){
+        if(cur >= n){
+            ++ans;    
+            return;
+        }
+        for(int i=0; i<n; ++i)
+            if(!col[i] && !vis[0][i+cur] && !vis[1][i-cur+n]){
+                col[i] = vis[0][i+cur] = vis[1][i-cur+n] = 1;
+                dfs(cur+1, n);
+                col[i] = vis[0][i+cur] = vis[1][i-cur+n] = 0;
+            }
+    }
+    
+     
+    int totalNQueens(int n) {
+        // write your code here
+        memset(col, 0, sizeof(col));
+        memset(vis, 0, sizeof(vis));
+        dfs(0, n);
+        return ans;
+    }
+};
+
