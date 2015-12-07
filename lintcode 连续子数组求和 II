@@ -1,0 +1,71 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/continuous-subarray-sum-ii/#
+连续子数组求和 II 查看运行结果 
+
+给定一个整数循环数组（头尾相接），请找出一个连续的子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的值。
+如果多个答案，请返回其中任意一个。
+
+样例
+给定 [3, 1, -100, -3, 4], 返回 [4,0].
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return  A list of integers includes the index of 
+     *          the first number and the index of the last number
+     */
+    vector<int> continuousSubarraySumII(vector<int>& A) {
+        // Write your code here
+        int ld=0, rd=0, lt=0, rt=0;
+        int sum = 0, maxN = -0x3f3f3f3f;
+        for(int i=0; i<A.size(); ++i){
+            if(sum < 0){
+                sum = A[i];
+                if(maxN < sum){
+                    maxN = sum;
+                    lt = rt = i;
+                }
+                ld = rd = i;
+            } else {
+                sum += A[i]; 
+                rd = i;
+                if(maxN < sum){
+                    maxN = sum;
+                    lt = ld;
+                    rt = rd;
+                }
+            }
+        }
+        ld = rd = 0;
+        int lx=0, rx=0;
+        int sumx = 0, minN = 0x3f3f3f3f, summ = 0;
+        for(int i=0; i<A.size(); ++i){
+            summ += A[i];
+            if(sumx > 0){
+                sumx = A[i];
+                if(minN > sumx){
+                    minN = sumx;
+                    lx = rx = i;
+                }
+                ld = rd = i;
+            } else {
+                sumx += A[i]; 
+                rd = i;
+                if(minN > sumx){
+                    minN = sumx;
+                    lx = ld;
+                    rx = rd;
+                }
+            }
+        }
+        vector<int> ans;
+        if(summ-minN > maxN && lx>0 && rx+1<A.size()){
+            ans.push_back(rx+1);
+            ans.push_back(lx-1);
+        } else {
+            ans.push_back(lt);
+            ans.push_back(rt);
+        }
+        return ans;
+    }
+};
