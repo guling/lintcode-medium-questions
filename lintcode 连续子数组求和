@@ -27,9 +27,9 @@ public:
                 ld = rd = i;
             } else {
                 sum += A[i];
+                rd = i;
                 if(maxN < sum){
                     maxN = sum;
-                    rd = i;
                     lt = ld;
                     rt = rd;
                 }
