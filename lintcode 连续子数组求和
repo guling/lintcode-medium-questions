@@ -1,0 +1,43 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/continuous-subarray-sum/
+连续子数组求和 查看运行结果 
+
+给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的值。（如果两个相同的答案，请返回其中任意一个）
+
+样例
+给定 [-3, 1, 3, -3, 4], 返回[1,4].
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return  A list of integers includes the index of 
+     *          the first number and the index of the last number
+     */
+    vector<int> continuousSubarraySum(vector<int>& A) {
+        // Write your code here
+        int ld=0, rd=0, lt=0, rt=0;
+        int sum = 0, maxN = -0x3f3f3f3f;
+        for(int i=0; i<A.size(); ++i){
+            if(sum < 0){
+                sum = A[i];
+                if(maxN < sum){
+                    maxN = sum;
+                    lt = rt = i;
+                }
+                ld = rd = i;
+            } else {
+                sum += A[i];
+                if(maxN < sum){
+                    maxN = sum;
+                    rd = i;
+                    lt = ld;
+                    rt = rd;
+                }
+            }
+        }
+        vector<int> ans;
+        ans.push_back(lt);
+        ans.push_back(rt);
+        return ans;
+    }
+};
