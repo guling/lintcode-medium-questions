@@ -1,0 +1,58 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/next-permutation-ii/
+下一个排列 查看运行结果 
+
+给定一个若干整数的排列，给出按正数大小进行字典序从小到大排序后的下一个排列。
+
+如果没有下一个排列，则输出字典序最小的序列。
+
+样例
+左边是原始排列，右边是对应的下一个排列。
+
+1,2,3 → 1,3,2
+
+3,2,1 → 1,2,3
+
+1,1,5 → 1,5,1
+
+挑战
+不允许使用额外的空间。
+
+class Solution {
+public:
+    /**
+     * @param nums: a vector of integers
+     * @return: return nothing (void), do not return anything, modify nums in-place instead
+     */
+    void nextPermutation(vector<int> &nums) {
+        // write your code here
+        
+        //方法一：
+        //调用<algorithm>中的下一个排列算法以及排序算法
+       // if(!next_permutation(nums.begin(), nums.end()))
+        //    sort(nums.begin(), nums.end(), less<int>());
+        
+        //方法二：
+        int ld = -1;
+        if(nums.size() < 1) return ;
+        for(int i=nums.size()-2; i>=0; --i)//找到从右边开始第一个比它右边相邻小的数的位置
+            if(nums[i] < nums[i+1]){
+                ld = i;
+                break;
+            }
+        if(ld != -1){//找到从右边开始，第一个比位置为ld所在数 大的数的位置
+            int rd;
+            for(int i=nums.size()-1; i>=0; --i)
+                if(nums[ld] < nums[i]){
+                    rd = i;
+                    break;
+                }
+            swap(nums[ld], nums[rd]);
+            //在交换之前，ld位置后面的已经是从大到小排好序的，已经没有下一个排列了
+            sort(nums.begin()+ld+1, nums.end());//交换之后，将ld后面的数置为最小的排列，从小到大排序
+        }
+        
+        if(ld == -1){
+            sort(nums.begin(), nums.end());
+        }
+    }
+};
