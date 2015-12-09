@@ -1,0 +1,86 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/longest-palindromic-substring/
+最长回文子串
+
+给出一个字符串（假设长度最长为1000），求出它的最长回文子串，你可以假定只有一个满足条件的最长回文串。
+
+样例
+给出字符串 "abcdzdcab"，它的最长回文子串为 "cdzdc"。
+
+挑战
+O(n2) 时间复杂度的算法是可以接受的，如果你能用 O(n) 的算法那自然更好。
+
+class Solution {
+public:
+    /**
+     * @param s input string
+     * @return the longest palindromic substring
+     */
+    string manacher(string& str){
+        int *p = new int[str.size() + 1]();
+        memset(p, 0, sizeof(p));
+        int mx = 0, id = 0;
+        for(int i=1; i<str.size(); i++){
+            if(mx > i)
+                p[i] = min(p[2*id-i], mx-i);
+            else
+                p[i] = 1;
+    
+            while(str[i - p[i]] == str[i + p[i]])
+                ++p[i];
+    
+            if(i + p[i] > mx)
+            {
+                mx = i + p[i];
+                id = i;
+            }
+    
+        }
+       
+        int maxP = 0;
+        for(int i=1; i<str.size(); ++i)
+            if(maxP < p[i] || (maxP == p[i] && str[i]=='#')){
+                maxP = p[i];
+                id = i;
+            } 
+        int ld = id-p[id]+1, rd = id+p[id]-1;
+        string ans = "";
+        for(int i=ld; i<=rd; ++i)
+            if(str[i]!='#')
+                ans += str[i];
+        return ans;
+    }
+     
+    int dp[1005][1005];//dp[i][j]表示第i个位置开始长度为j的串的最大回文串的长度
+    string longestPalindrome(string& s) {
+        // Write your code here
+        //O(n^2)
+        // int len = s.size();
+        // memset(dp, 0, sizeof(dp));
+        // for(int i=0; i<len; ++i)
+        //     dp[i][1] = 1;
+        // int ld=0, rd=0, maxL = 1;
+        // for(int k=2; k<=len; ++k){
+        //     for(int i=0, j; i<len && (j=i+k-1)<len; ++i){
+        //         if(s[i] == s[j] && dp[i+1][k-2] == k-2)
+        //                 dp[i][k] = dp[i+1][k-2] + 2;
+        //         else 
+        //             dp[i][k] = max(dp[i+1][k-1], dp[i][k-1]);
+        //         if(maxL<dp[i][k]){
+        //             maxL = dp[i][k];
+        //             ld = i;
+        //             rd = j;
+        //         }
+        //     }
+        // }
+        // return s.substr(ld, rd-ld+1);
+        
+        
+        //采用manacher算法，O(n)的时间复杂度
+        int len = s.size();
+        int k = -1;
+        for(int i=1; i<len; ++i)
+            s.insert(k+=2, 1, '#');
+        s.insert(0, 1, '$');
+        return manacher(s);
+    }
+};
