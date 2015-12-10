@@ -1,0 +1,62 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/permutation-sequence/
+详解：http://www.cnblogs.com/hujunzheng/p/5037121.html
+第k个排列 查看运行结果 
+
+给定 n 和 k，求123..n组成的排列中的第 k 个排列。
+
+样例
+对于 n = 3, 所有的排列如下：
+
+123
+132
+213
+231
+312
+321
+如果 k = 4, 第4个排列为，231.
+
+注意
+1 ≤ n ≤ 9
+
+class Solution {
+public:
+    /**
+      * @param n: n
+      * @param k: the kth permutation
+      * @return: return the k-th permutation
+      */
+     
+    string getPermutation(int n, int k) {
+        if(n==1) return "1";
+        int f[n+1];
+        bool use[n+1];
+        f[1] = 0;
+        f[2] = 1;
+        memset(use, false, sizeof(use));
+        for(int i=3; i<=n; ++i)
+            f[i] = f[i-1]*(i-1);
+        string ans = "";
+        --k;//要计算的排列之前有多少个排列
+        for(int i=n; i>=2; --i){
+            int cnt = 0;
+            int c = k/f[i];//假设该排列的这位数是x，c就是比x小的数（之前没有用过）的个数
+            k%=f[i];
+            for(int j=1; j<=n; ++j){//寻找符合要求的x的值
+                if(!use[j]){
+                    if(cnt == c){
+                        ans += j+'0';
+                        use[j] = true;
+                        break;
+                    }
+                    ++cnt;
+                }
+            }
+        }
+        for(int j=1; j<=n; ++j)
+            if(!use[j]){
+                ans += j+'0';
+                break;
+            }
+        return ans;
+    }
+};
