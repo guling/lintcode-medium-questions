@@ -32,27 +32,39 @@ public:
         //    sort(nums.begin(), nums.end(), less<int>());
         
         //方法二：
-        int ld = -1;
-        if(nums.size() < 1) return ;
-        for(int i=nums.size()-2; i>=0; --i)//找到从右边开始第一个比它右边相邻小的数的位置
-            if(nums[i] < nums[i+1]){
-                ld = i;
-                break;
-            }
-        if(ld != -1){//找到从右边开始，第一个比位置为ld所在数 大的数的位置
-            int rd;
-            for(int i=nums.size()-1; i>=0; --i)
-                if(nums[ld] < nums[i]){
-                    rd = i;
-                    break;
-                }
-            swap(nums[ld], nums[rd]);
-            //在交换之前，ld位置后面的已经是从大到小排好序的，已经没有下一个排列了
-            sort(nums.begin()+ld+1, nums.end());//交换之后，将ld后面的数置为最小的排列，从小到大排序
-        }
+        // int ld = -1;
+        // if(nums.size() < 1) return ;
+        // for(int i=nums.size()-2; i>=0; --i)//找到从右边开始第一个比它右边相邻小的数的位置
+        //     if(nums[i] < nums[i+1]){
+        //         ld = i;
+        //         break;
+        //     }
+        // if(ld != -1){//找到从右边开始，第一个比位置为ld所在数 大的数的位置
+        //     int rd;
+        //     for(int i=nums.size()-1; i>=0; --i)
+        //         if(nums[ld] < nums[i]){
+        //             rd = i;
+        //             break;
+        //         }
+        //     swap(nums[ld], nums[rd]);
+        //     //在交换之前，ld位置后面的已经是从大到小排好序的，已经没有下一个排列了
+        //     sort(nums.begin()+ld+1, nums.end());//交换之后，将ld后面的数置为最小的排列，从小到大排序
+        // }
         
-        if(ld == -1){
-            sort(nums.begin(), nums.end());
-        }
+        // if(ld == -1){
+        //     sort(nums.begin(), nums.end());
+        // }
+        
+        //方法三：挑战不使用额外的空间, 其实和方法二的思路是一样的
+        int n = nums.size();
+        for(int i=n-1; i>=0; --i)
+            for(int j=n-1; j>i; --j)
+                if(nums[i] < nums[j]){
+                    swap(nums[i], nums[j]);
+                    sort(nums.begin()+i+1, nums.end());
+                    return ;
+                }
+        sort(nums.begin(), nums.end());
     }
 };
+
