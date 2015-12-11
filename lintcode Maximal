@@ -1,0 +1,48 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/maximal-square/
+Maximal Square
+
+Given a 2D binary matrix filled with 0's and 1's, find the largest square containing all 1's and return its area.
+
+样例
+For example, given the following matrix:
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+Return 4.
+
+class Solution {
+public:
+    /**
+     * @param matrix: a matrix of 0 and 1
+     * @return: an integer
+     */
+    int maxSquare(vector<vector<int> > &g) {
+        // write your code here
+        int n = g.size();
+        if(n == 0) return 0;
+        int m = g[0].size();
+        int maxS = 0;
+        for(int i=0; i<n; ++i)
+            if(g[i][0]){
+                maxS = 1;
+                break;
+            }
+        if(!maxS){
+            for(int j=0; j<m; ++j)
+                if(g[0][j]){
+                    maxS = 1;
+                    break;
+                }
+        }
+        for(int i=1; i<n; ++i)
+            for(int j=1; j<m; ++j){
+                if(g[i-1][j] && g[i][j-1] && g[i-1][j-1] && g[i][j])
+                    g[i][j] = min(min(g[i-1][j], g[i][j-1]), g[i-1][j-1]) + 1;
+                if(maxS < g[i][j])
+                    maxS = g[i][j];
+            }
+        return maxS*maxS;
+    }
+};
