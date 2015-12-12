@@ -1,0 +1,72 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/binary-tree-maximum-path-sum/#
+二叉树中的最大路径和 查看运行结果 
+
+给出一棵二叉树，寻找一条路径使其路径和最大，路径可以在任一节点中开始和结束（路径和为两个节点之间所在路径上的节点权值之和）
+
+样例
+给出一棵二叉树：
+
+       1
+      / \
+     2   3
+返回 6
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of binary tree.
+     * @return: An integer
+     */
+    int ans;
+    map<TreeNode *, bool> mp;//标记到当前结点路径和加的是左子树，还是右子树
+    void dfsT(TreeNode *root){//首先找出各个节点加上左子树的路径和大，还是加上右子树的路径和大
+        if(root == NULL) return;
+        dfsT(root->left);
+        dfsT(root->right);
+        int ls = root->left ? root->left->val : -0x3f3f3f3f;//空结点放回负无穷大
+        int rs = root->right ? root->right->val : -0x3f3f3f3f;
+        if(ls > rs){
+            mp[root] = true;
+            root->val = max(root->val+ls, root->val);
+        } else {
+            mp[root] = false;
+            root->val = max(root->val+rs, root->val);
+        }
+    }
+    
+    void searchT(TreeNode *root){//如果到当前结点的路径和加的是左子树，再尝试一下加右子树，看时候能得到更大的路径和
+        if(root){
+            int s;
+            if(mp[root]){//左子树的值大
+                s = root->right ? root->right->val : 0;
+            } else {//右子树的值大
+                s = root->left ? root->left->val : 0;
+            }
+            int val = max(root->val, root->val+s);
+            ans = max(val, ans);
+            searchT(root->left);
+            searchT(root->right);
+        }
+    }
+    
+    int maxPathSum(TreeNode *root) {
+        // write your code here
+        mp.clear();
+        dfsT(root);
+        ans = -0x3f3f3f3f;
+        searchT(root);
+        return ans;
+    }
+};
