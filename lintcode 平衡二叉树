@@ -1,0 +1,49 @@
+题目链接:http://www.lintcode.com/zh-cn/problem/balanced-binary-tree/
+平衡二叉树 查看运行结果 
+
+给定一个二叉树,确定它是高度平衡的。对于这个问题,一棵高度平衡的二叉树的定义是：一棵二叉树中每个节点的两个子树的深度相差不会超过1。 
+
+样例
+给出二叉树 A={3,9,20,#,#,15,7}, B={3,#,20,15,7}
+
+A)  3            B)    3 
+   / \                  \
+  9  20                 20
+    /  \                / \
+   15   7              15  7
+二叉树A是高度平衡的二叉树，但是B不是
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of binary tree.
+     * @return: True if this Binary tree is Balanced, or false.
+     */
+    bool flag;
+    int heightT(TreeNode *root){
+        if(root == NULL) return 0;
+        int lh = heightT(root->left);
+        int rh = heightT(root->right);
+        if(abs(lh-rh)>1)
+            flag = false;
+        return 1+max(lh, rh);
+    }
+    bool isBalanced(TreeNode *root) {
+        // write your code here
+        flag = true;
+        heightT(root);
+        return flag;
+    }
+};
