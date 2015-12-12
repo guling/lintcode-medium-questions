@@ -1,0 +1,94 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/binary-tree-zigzag-level-order-traversal/
+详解：http://www.cnblogs.com/hujunzheng/p/5042170.html
+二叉树的锯齿形层次遍历 查看运行结果 
+
+给出一棵二叉树，返回其节点值的锯齿形层次遍历（先从左往右，下一层再从右往左，层与层之间交替进行） 
+
+样例
+给出一棵二叉树 {3,9,20,#,#,15,7},
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回其锯齿形的层次遍历为：
+
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+ 
+
+class Solution {
+    /**
+     * @param root: The root of binary tree.
+     * @return: A list of lists of integer include 
+     *          the zigzag level order traversal of its nodes' values 
+     */
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode *root) {
+        // write your code here
+        vector<vector<int>> vv;
+        if(root == NULL) return vv;
+        deque<TreeNode *> q;
+        q.push_back(root);
+        bool dir = true;//true表示从左向右存储层次遍历，否则是从右向左
+        int levelCnt = 1;//上一层的节点数目
+        int curLevelCnt = 0;//下一层节点数目
+        vector<int> v;
+        while(!q.empty()){
+            TreeNode *cur;
+            if(dir){
+                cur = q.front();
+                q.pop_front();
+            } else {
+                cur = q.back();
+                q.pop_back();
+            }
+            if(dir){
+                if(cur->left){
+                    q.push_back(cur->left);
+                    ++curLevelCnt;
+                }
+                if(cur->right){
+                    q.push_back(cur->right);
+                    ++curLevelCnt;
+                }
+            } else {
+                if(cur->right){
+                    q.push_front(cur->right);
+                    ++curLevelCnt;
+                }
+                if(cur->left){
+                    q.push_front(cur->left);
+                    ++curLevelCnt;
+                }
+            }
+            v.push_back(cur->val);
+            --levelCnt;
+            if(levelCnt == 0){//这一层完毕
+                vv.push_back(v);
+                v.clear();
+                levelCnt = curLevelCnt;
+                curLevelCnt = 0;
+                dir = !dir;
+            }
+        }
+        return vv;
+    }
+};
