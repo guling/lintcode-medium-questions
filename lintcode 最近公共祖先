@@ -1,0 +1,98 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/lowest-common-ancestor/
+最近公共祖先 查看运行结果 
+
+给定一棵二叉树，找到两个节点的最近公共父节点(LCA)。
+
+最近公共祖先是两个节点的公共的祖先节点且具有最大深度。
+
+样例
+对于下面这棵二叉树
+
+  4
+ / \
+3   7
+   / \
+  5   6
+LCA(3, 5) = 4
+
+LCA(5, 6) = 7
+
+LCA(6, 7) = 7
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of the binary search tree.
+     * @param A and B: two nodes in a Binary.
+     * @return: Return the least common ancestor(LCA) of the two nodes.
+     */
+    bool searchT(TreeNode *root, TreeNode *x, stack<TreeNode*> &st){
+        if(root){
+            if(root == x || searchT(root->left, x, st) || searchT(root->right, x, st)){
+                st.push(root);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    map<TreeNode*, TreeNode*> f;//父节点和子节点的映射
+    set<TreeNode*> st;//标记节点时候被访问过
+    TreeNode *AA, *BB, *ans;
+    
+    TreeNode* find(TreeNode *x){//寻找最近公共祖先
+        return x == f[x] ? f[x] : f[x]=find(f[x]);
+    }
+    
+    void tarjan(TreeNode* root){
+        if(!root) return;
+        f[root] = root;
+        st.insert(root);
+        if(root == AA && st.find(BB)!=st.end()){
+            ans = find(BB);
+        }
+        
+        if(root == BB && st.find(AA)!=st.end()){
+            ans = find(AA);
+        }
+        tarjan(root->left);
+        if(root->left) f[root->left] = root;
+        tarjan(root->right);
+        if(root->right) f[root->right] = root;
+    }
+    
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *A, TreeNode *B) {
+        // write your code here
+        //方法1：将A，B的路径存储到栈中，然后将比较路径前边相同的部分，最后一个相同的就是最近公共祖先
+        // stack<TreeNode*> At, Bt;
+        // searchT(root, A, At);
+        // searchT(root, B, Bt);
+        // TreeNode *ans=NULL;
+        // while(!At.empty() && !Bt.empty()){
+        //     if(At.top() == Bt.top())
+        //         ans = At.top();
+        //      At.pop();
+        //      Bt.pop();
+        // }
+        // return ans;
+        
+        //方法2：tarjan算法
+        AA = A;
+        BB = B;
+        tarjan(root);
+        return ans;
+    }
+};
