@@ -1,0 +1,80 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/longest-common-subsequence/#
+最长公共子序列
+
+给出两个字符串，找到最长公共子序列(LCS)，返回LCS的长度。
+
+样例
+给出"ABCD" 和 "EDCA"，这个LCS是 "A" (或 D或C)，返回1
+
+给出 "ABCD" 和 "EACB"，这个LCS是"AC"返回 2
+
+注意
+
+
+说明
+最长公共子序列的定义：
+
+最长公共子序列问题是在一组序列（通常2个）中找到最长公共子序列（注意：不同于子串，LCS不需要是连续的子串）。该问题是典型的计算机科学问题，是文件差异比较程序的基础，在生物信息学中也有所应用。
+https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
+class Solution {
+public:
+    /**
+     * @param A, B: Two strings.
+     * @return: The length of longest common subsequence of A and B.
+     */
+    int longestCommonSubsequence(string A, string B) {
+        // write your code here
+        //方法1: dp
+        // int n = A.size(), m = B.size();
+        // if(n==0 || m==0) return 0;
+        // int lcs[n+1][m+1];
+        // memset(lcs, 0, sizeof(lcs));
+        // for(int i=1; i<=n; ++i)
+        //     for(int j=1; j<=m; ++j)
+        //         if(A[i-1] == B[j-1]){
+        //             lcs[i][j] = lcs[i-1][j-1]+1;
+        //         } else {
+        //             lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1]);
+        //         }
+        // return lcs[n][m];
+        
+        //方法2：dp
+        // int n = A.size(), m = B.size();
+        // if(n==0 || m==0) return 0;
+        // int lcs[n+1][m+1];
+        // memset(lcs, 0, sizeof(lcs));
+        // for(int i=1; i<=n; ++i){
+        //     int maxN = 0;
+        //     for(int j=1; j<=m; ++j){
+        //         lcs[i][j] = lcs[i-1][j];
+        //         if(A[i-1] == B[j-1])
+        //             lcs[i][j] = maxN+1;
+        //         if(maxN < lcs[i-1][j])
+        //             maxN = lcs[i-1][j];
+        //     }
+        // }
+        // int maxN = 0;
+        // for(int j=1; j<=m; ++j)
+        //     if(lcs[n][j] > maxN)
+        //         maxN = lcs[n][j];
+        // return maxN;
+        
+        //方法3：dp，一维数组
+        int n = A.size(), m = B.size();
+        if(n==0 || m==0) return 0;
+        int lcs[m+1];
+        memset(lcs, 0, sizeof(lcs));
+        for(int i=1; i<=n; ++i){
+            int maxN = 0;
+            for(int j=1; j<=m; ++j){
+                int old = lcs[j];
+                if(A[i-1] == B[j-1])
+                    lcs[j] = maxN+1;
+                if(maxN < old)
+                    maxN = old;
+            }
+        }
+        return *max_element(lcs+1, lcs+m+1);
+    }
+};
