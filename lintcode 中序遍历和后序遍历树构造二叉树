@@ -1,0 +1,60 @@
+中序遍历和后序遍历树构造二叉树 查看运行结果 
+
+根据中序遍历和后序遍历树构造二叉树
+
+样例
+给出树的中序遍历： [1,2,3] 和后序遍历： [1,3,2]
+
+返回如下的树：
+
+  2
+
+ /  \
+
+1    3
+
+注意
+你可以假设树中不存在相同数值的节点
+
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+ 
+
+class Solution {
+    /**
+     *@param inorder : A list of integers that inorder traversal of a tree
+     *@param postorder : A list of integers that postorder traversal of a tree
+     *@return : Root of a tree
+     */
+public:
+    
+    void buildT(TreeNode* &T, vector<int> &inorder, vector<int> &postorder, int inoI, int postI, int inoL){
+        if(inoI>=inoL) return;
+        T = new TreeNode(postorder[postI]);
+        int inoP;
+        for(int i=inoI; i<inoL; ++i)
+            if(postorder[postI] == inorder[i]){
+                inoP = i;
+                break;
+            }
+        buildT(T->left, inorder, postorder, inoI, postI-(inoL-inoP), inoP);
+        buildT(T->right, inorder, postorder, inoP+1, postI-1, inoL);
+    }
+
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+        // write your code here
+        TreeNode *T = NULL;
+        buildT(T, inorder, postorder, 0, postorder.size()-1, inorder.size());
+        return T;
+    }
+};
