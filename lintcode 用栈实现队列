@@ -1,0 +1,55 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/implement-queue-by-two-stacks/
+用栈实现队列 查看运行结果 
+
+正如标题所述，你需要使用两个栈来实现队列的一些操作。
+
+队列应支持push(element)，pop() 和 top()，其中pop是弹出队列中的第一个(最前面的)元素。
+
+pop和top方法都应该返回第一个元素的值。
+
+样例
+比如push(1), pop(), push(2), push(3), top(), pop()，你应该返回1，2和2
+
+挑战
+仅使用两个栈来实现它，不使用任何其他数据结构，push，pop 和 top的复杂度都应该是均摊O(1)的
+
+class Queue {
+public:
+    stack<int> st1;//用于push
+    stack<int> st2;//用于pop
+
+    Queue() {
+        // do intialization if necessary
+    }
+
+    void push(int element) {
+        // write your code here
+        if(st2.size() == 0)
+            st2.push(element);
+        else 
+            st1.push(element);
+    }
+    
+    void init(){
+        if(st2.size() == 0)
+            while(!st1.empty()){
+                st2.push(st1.top());
+                st1.pop();
+            }
+    }
+    
+    int pop() {
+        // write your code here
+        init();
+        int val = st2.top();
+        st2.pop();
+        return val;
+    }
+
+    int top() {
+        // write your code here
+        init(); 
+        int val = st2.top();
+        return val;
+    }
+};
