@@ -1,4 +1,5 @@
 题目链接：http://www.lintcode.com/zh-cn/problem/single-number-iii/
+详解：http://www.cnblogs.com/hujunzheng/p/5045084.html
 落单的数 III 查看运行结果 
 
 给出2*n + 2个的数字，除其中两个数字之外其他每个数字均出现两次，找到这两个数字。
