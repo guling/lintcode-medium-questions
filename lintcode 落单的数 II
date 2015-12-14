@@ -1,0 +1,36 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/single-number-ii/
+落单的数 II 查看运行结果 
+
+给出3*n + 1 个的数字，除其中一个数字之外其他每个数字均出现三次，找到这个数字。
+
+样例
+给出 [1,1,2,3,3,3,2,2,4,1] ，返回 4
+
+挑战
+一次遍历，常数级的额外空间复杂度
+
+class Solution {
+public:
+	/**
+	 * @param A : An integer array
+	 * @return : An integer 
+	 */
+    int singleNumberII(vector<int> &A) {
+        // write your code here
+       
+        int ans[35];
+        memset(ans, 0, sizeof(ans));
+        for(int i=0; i<A.size(); ++i){
+            for(int k=0; k<32; k++)
+                ans[k] = (ans[k]+((A[i]>>k)&1))%3;
+        }
+         
+        int ret = 0;
+        int base = 1;
+        for(int i=0; i<32; ++i){
+            ret += ans[i]*base;
+            base *= 2;
+        }
+        return ret;
+    }
+};
