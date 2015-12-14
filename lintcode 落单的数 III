@@ -1,0 +1,45 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/single-number-iii/
+落单的数 III 查看运行结果 
+
+给出2*n + 2个的数字，除其中两个数字之外其他每个数字均出现两次，找到这两个数字。
+
+样例
+给出 [1,2,2,3,4,4,5,3]，返回 1和5
+
+挑战
+O(n)时间复杂度，O(1)的额外空间复杂度
+
+class Solution {
+public:
+    /**
+     * @param A : An integer array
+     * @return : Two integers
+     */
+     
+    int findNum(int k, vector<int> &A, bool flag){
+        int ret = 0;
+        for(int i=0; i<A.size(); ++i){
+            if(flag && (1<<k)&A[i])
+                ret ^= A[i];
+            if(!flag && !((1<<k)&A[i]))
+                ret ^= A[i];
+        }
+        return ret;
+    }
+    vector<int> singleNumberIII(vector<int> &A) {
+        // write your code here
+        int x = 0;
+        for(int i=0; i<A.size(); ++i)
+            x ^= A[i];
+        int k = 0;
+        for(k; k<32; ++k)//找到异或值最后一个1，说明该位置P之后，两个不同的数对应的二进制是相同的
+            if((1<<k)&x)
+                break;
+    //根据这个位置P，转换成“2*m+1个数字，除了一个数字其他数字均出现两次”的问题
+    //将位置P上对应为1的数字异或得到一个数字，然后再将位置P上对应为0的数字异或得到一个数字，最后得到答案
+        vector<int> ans;
+        ans.push_back(findNum(k, A, true));
+        ans.push_back(findNum(k, A, false));
+        return ans;
+    }
+};
