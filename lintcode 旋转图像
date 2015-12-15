@@ -1,0 +1,66 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/rotate-image/
+旋转图像
+
+给定一个N×N的二维矩阵表示图像，90度顺时针旋转图像。
+
+样例
+给出一个矩形[[1,2],[3,4]]，90度顺时针旋转后，返回[[3,1],[4,2]]
+
+挑战
+能否在原地完成？
+
+class Solution {
+public:
+    /**
+     * @param matrix: A list of lists of integers
+     * @return: Void
+     */
+    pair<int, int> getNextPos(int i, int j, int top, int left, int down, int right){
+        //(top, left) (down, right)标示这个圈的范围
+        int n = down-top+1;//得到这个圈的维度
+        int move = n-1;//转过move个位置
+        while(move--){
+            if(i==top && j>=left && j<right)
+                ++j;
+            else if(i>=top && i<down && j==right)
+                ++i;
+            else if(i==down && j<=right && j>left)
+                --j;
+            else if(i<=down && i>top && j==left)
+                --i;
+        }
+        return make_pair(i, j);
+    }
+    
+    void rotate(vector<vector<int> > &matrix) {
+        // write your code here
+        //方法1：转圈法，从外圈到里圈，设圈的维度是n，图像旋转90度后，数字顺时针移动n-1个位置
+        // int circle = matrix.size()/2;//得到圈的个数
+        // int top=0, left=0, down=matrix.size()-1, right=matrix.size()-1;//最外圈的维度
+        // for(int cir=0; cir<circle; ++cir){
+        //     int ttop = top+cir;
+        //     int lleft = left+cir;
+        //     int rright = right-cir;
+        //     int ddown = down-cir;
+        //     for(int j=lleft; j<rright; ++j){
+        //         pair<int, int> org = make_pair(ttop, j);
+        //         pair<int, int> cur = org;
+        //         int cur_val = matrix[cur.first][cur.second];//当前数的值
+        //         while(true){
+        //             pair<int, int> _next = getNextPos(cur.first, cur.second, ttop, lleft, ddown, rright);
+        //             swap(matrix[_next.first][_next.second], cur_val);
+        //             if(_next==org) break;
+        //             cur = _next;
+        //         }
+        //     }
+        // }
+        
+        int n = matrix.size();
+        for(int i=0; i<n/2; ++i)
+            for(int j=0; j<n; ++j)
+                swap(matrix[i][j], matrix[n-i-1][j]);
+        for(int i=0; i<n; ++i)
+            for(int j=0; j<i; ++j)
+                swap(matrix[i][j], matrix[j][i]);
+    }
+};
