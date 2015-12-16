@@ -1,0 +1,78 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/permutations-ii/
+带重复元素的排列 查看运行结果 
+
+给出一个具有重复数字的列表，找出列表所有不同的排列。
+
+样例
+给出列表 [1,2,2]，不同的排列有：
+
+[
+  [1,2,2],
+  [2,1,2],
+  [2,2,1]
+]
+挑战
+使用递归和非递归分别完成该题。
+
+class Solution {
+public:
+    /**
+     * @param nums: A list of integers.
+     * @return: A list of unique permutations.
+     */
+    vector<vector<int> > ans;
+    
+    map<int, int> cnt; 
+    void dfs(int n, vector<int> &nums, vector<int> &v){
+        if(v.size() >= n){
+            ans.push_back(v);
+            return ;
+        }
+        
+        for(int i=0; i<nums.size(); ++i)
+            if(cnt[nums[i]]){
+                --cnt[nums[i]];
+                v.push_back(nums[i]);
+                dfs(n, nums, v);
+                v.pop_back();
+                ++cnt[nums[i]];
+            }
+    }
+    
+    vector<vector<int> > permuteUnique(vector<int> &nums) {
+        // write your code here
+        sort(nums.begin(), nums.end());
+        //方法1：
+        // do{
+        //     ans.push_back(nums);
+        // }while(next_permutation(nums.begin(), nums.end()));
+        // return ans;
+        
+        //方法2：递归：
+        // for(int i=0; i<nums.size(); ++i)
+        //     ++cnt[nums[i]];
+        // int n = nums.size();
+        // nums.erase(unique(nums.begin(), nums.end()), nums.end());//清除重复的元素
+        // vector<int> v;
+        // dfs(n, nums, v);
+        
+        //方法3：
+        bool flag = true;
+        while(flag){
+            flag = false;
+            ans.push_back(nums);
+            for(int i=nums.size()-1; i>=0; --i){
+                for(int j=nums.size()-1; j>i; --j)
+                    if(nums[i] < nums[j]){
+                        flag = true;
+                        while(j-1>i && nums[j-1]==nums[j]) --j;//如果前面有相同的数字，找到最左边的数字
+                        swap(nums[i], nums[j]);
+                        sort(nums.begin()+i+1, nums.end());
+                        break;
+                    }
+                if(flag) break;
+            }
+        }
+        return ans;
+    }
+};
