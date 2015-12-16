@@ -1,0 +1,40 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/combinations/
+组合 查看运行结果 
+
+组给出两个整数n和k，返回从1......n中选出的k个数的组合。
+
+样例
+例如 n = 4 且 k = 2
+
+返回的解为：
+
+[[2,4],[3,4],[2,3],[1,2],[1,3],[1,4]]
+
+class Solution {
+public:
+    /**
+     * @param n: Given the range of numbers
+     * @param k: Given the numbers of combinations
+     * @return: All the combinations of k numbers out of 1..n
+     */
+    vector<vector<int> > vv;
+    
+    void dfs(int n, int k, int cur, int cnt, vector<int> &v){
+        if(cnt >= k){
+            vv.push_back(v);
+            return;
+        }
+        if(cur > n) return;
+        v.push_back(cur);
+        dfs(n, k, cur+1, cnt+1, v);
+        v.pop_back();
+        dfs(n, k, cur+1, cnt, v);
+    }
+    
+    vector<vector<int> > combine(int n, int k) {
+        // write your code here
+        vector<int> v;
+        dfs(n, k, 1, 0, v);
+        return vv;
+    }
+};
