@@ -1,0 +1,137 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/topological-sorting/
+拓扑排序 查看运行结果 
+
+给定一个有向图，图节点的拓扑排序被定义为：
+
+对于每条有向边A--> B，则A必须排在B之前　　
+拓扑排序的第一个节点可以是任何在图中没有其他节点指向它的节点　　
+找到给定图的任一拓扑排序
+
+样例
+对于下列图：
+
+
+
+这个图的拓扑排序可能是：
+
+[0, 1, 2, 3, 4, 5]
+
+或者
+
+[0, 2, 3, 1, 5, 4]
+
+或者
+
+....
+
+
+
+注意
+你可以假设图中至少存在一种拓扑排序
+
+挑战
+能否分别用BFS和DFS完成？
+
+/**
+ * Definition for Directed graph.
+ * struct DirectedGraphNode {
+ *     int label;
+ *     vector<DirectedGraphNode *> neighbors;
+ *     DirectedGraphNode(int x) : label(x) {};
+ * };
+ */
+class Solution {
+public:
+    /**
+     * @param graph: A list of Directed graph node
+     * @return: Any topological order for the given graph.
+     */
+    vector<DirectedGraphNode*> g;
+    vector<int> v;
+    set<int> vis;
+    void dfs(DirectedGraphNode* cur){
+        vis.insert(cur->label);
+        vector<DirectedGraphNode *> n = cur->neighbors;
+        for(int i=0; i<n.size(); ++i){
+            DirectedGraphNode* next = n[i];
+            if(vis.find(next->label) == vis.end()){
+                dfs(next);
+            }
+        }
+        v.push_back(cur->label);
+    }
+     
+    vector<DirectedGraphNode*> topSort(vector<DirectedGraphNode*> graph) {
+        // write your code here
+        //方法1：dfs
+        // vis.clear();
+        // g.clear();
+        // v.clear();
+        // for(int i=0; i<graph.size(); ++i){
+        //     DirectedGraphNode* cur = graph[i];
+        //     if(vis.find(cur->label) == vis.end())
+        //         dfs(cur);
+        // }
+        // DirectedGraphNode *cur, *next = NULL;
+        // for(int i=v.size()-1; i>=0; --i){
+        //     cur = new DirectedGraphNode(v[i]);
+        //     if(next != NULL){
+        //         vector<DirectedGraphNode *> neighbors;
+        //         neighbors.push_back(next);
+        //         cur->neighbors = neighbors;
+        //     }
+        //     g.push_back(cur);
+        //     next = cur;
+        // }
+        // return g;   
+        
+        //方法2：bfs
+        queue<DirectedGraphNode*> q;
+        vis.clear();
+        map<DirectedGraphNode*, int> deg;
+        for(int i=0; i<graph.size(); ++i){
+            q.push(graph[i]);
+            vis.insert(graph[i]->label);
+        }
+        while(!q.empty()){//寻找入度为0的节点
+            DirectedGraphNode * cur = q.front();
+            q.pop();
+            if(deg.find(cur) == deg.end()) deg[cur] = 0;
+            for(int i=0; i<cur->neighbors.size(); ++i){
+                ++deg[cur->neighbors[i]];
+                if(vis.find(cur->neighbors[i]->label) == vis.end()){
+                    vis.insert(cur->neighbors[i]->label);
+                    q.push(cur->neighbors[i]);
+                }
+            }
+        }
+        stack<DirectedGraphNode*> st;
+        v.clear();
+        g.clear();
+        for(auto p : deg){
+            if(p.second == 0)
+                st.push(p.first);
+        }
+        while(!st.empty()){//不断的选出入度为0的节点放入vector中
+            DirectedGraphNode * cur = st.top();
+            st.pop();
+            v.push_back(cur->label);
+            for(int i=0; i<cur->neighbors.size(); ++i)
+                if(--deg[cur->neighbors[i]] == 0)
+                    st.push(cur->neighbors[i]);
+        }
+        
+        DirectedGraphNode *cur, *next = NULL;
+        for(int i=0; i<v.size(); ++i){
+            cur = new DirectedGraphNode(v[i]);
+            if(next != NULL){
+                vector<DirectedGraphNode *> neighbors;
+                neighbors.push_back(next);
+                cur->neighbors = neighbors;
+            }
+            g.push_back(cur);
+            next = cur;
+        }
+        return g;
+    }
+};
