@@ -1,0 +1,56 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/restore-ip-addresses/
+恢复IP地址 查看运行结果 
+
+给一个由数字组成的字符串。求出其可能恢复为的所有IP地址。
+
+样例
+给出字符串 "25525511135"，所有可能的IP地址为：
+
+[
+  "255.255.11.135",
+  "255.255.111.35"
+]
+（顺序无关紧要）
+
+class Solution {
+public:
+    /**
+     * @param s the IP string
+     * @return All possible valid IP addresses
+     */
+    vector<string> ipN;
+    vector<string> ret;
+    void restore(string &s, int curIp, int n){
+        if(curIp == 4 && n==s.size()){
+            for(int i=0; i<4; ++i){
+                if(ipN[i][0]=='0' && ipN[i].size()>1) return;
+                stringstream ss;
+                int tmp;
+                ss<<ipN[i];
+                ss>>tmp;
+                if(!(tmp>=0 && tmp<=255)) return ;
+            }
+            string ans = "";
+            ans += ipN[0];
+            for(int i=1; i<4; ++i)
+                ans += "."+ipN[i];
+            ret.push_back(ans);
+            return ;
+        }
+        if(n>=s.size() || curIp>=4) return ;
+        for(int i=1; i<=3; ++i){
+            if(n+i > s.size()) break;
+            ipN[curIp] += s[n+i-1];
+            ipN[curIp+1] = "";
+            restore(s, curIp+1, n+i);
+        }
+    }
+    
+    vector<string> restoreIpAddresses(string& s) {
+        // Write your code here
+        for(int i=0; i<5; ++i)
+            ipN.push_back("");
+        restore(s, 0, 0);
+        return ret;
+    }
+};
