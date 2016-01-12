@@ -1,0 +1,74 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/search-for-a-range/
+搜索区间 查看运行结果 
+
+给定一个包含 n 个整数的排序数组，找出给定目标值 target 的起始和结束位置。
+
+如果目标值不在数组中，则返回[-1, -1]
+
+您在真实的面试中是否遇到过这个题？ Yes
+样例
+给出[5, 7, 7, 8, 8, 10]和目标值target=8,
+
+返回[3, 4]
+
+挑战
+时间复杂度 O(log n)
+
+class Solution {
+    /** 
+     *@param A : an integer sorted array
+     *@param target :  an integer to be inserted
+     *return : a list of length 2, [index1, index2]
+     */
+     
+     int my_lower(vector<int> &A, int target){
+        int ld = 0, rd = A.size()-1;
+        while(ld <= rd){
+            int mid = (ld+rd)>>1;
+            if(A[mid] >= target)
+                rd = mid-1;
+            else 
+                ld = mid+1;
+        }
+        return rd+1;
+     }
+     
+     int my_upper(vector<int> &A, int target){
+        int ld = 0, rd = A.size()-1;
+        while(ld <= rd){
+            int mid = (ld+rd)>>1;
+            if(A[mid] > target)
+                rd = mid-1;
+            else 
+                ld = mid+1;
+        }
+        return ld-1;
+     }
+     
+public:
+    vector<int> searchRange(vector<int> &A, int target) {
+        // write your code here
+        //lower_bound返回大于等于target的第一个元素的位置， upper_bound返回的是最后一个大于target元素的位置
+        // int ld = -1;
+        // int rd = -1;
+        // vector<int>::iterator it = lower_bound(A.begin(), A.end(), target);
+        // if(it != A.end() && *it==target) ld = it-A.begin();
+        // if(ld!=-1){
+        //     it = upper_bound(A.begin(), A.end(), target);
+        //     rd = it-A.begin()-1;
+        // }
+        // vector<int> ans;
+        // ans.push_back(ld);
+        // ans.push_back(rd);
+        // return ans;
+        
+        int ld = my_lower(A, target);
+        int rd = my_upper(A, target);
+        if(ld<0 || ld>=A.size() || A[ld]!=target)
+            ld = rd = -1;
+        vector<int> ans;
+        ans.push_back(ld);
+        ans.push_back(rd);
+        return ans;
+    }
+};
