@@ -1,0 +1,42 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/longest-substring-without-repeating-characters/
+最长无重复字符的子串 查看运行结果 
+
+给定一个字符串，请找出其中无重复字符的最长子字符串。
+
+您在真实的面试中是否遇到过这个题？ Yes
+样例
+例如，在"abcabcbb"中，其无重复字符的最长子字符串是"abc"，其长度为 3。
+
+对于，"bbbbb"，其无重复字符的最长子字符串为"b"，长度为1。
+
+挑战
+O(n) 时间
+
+class Solution {
+public:
+    /**
+     * @param s: a string
+     * @return: an integer 
+     */
+    int lengthOfLongestSubstring(string s) {
+        // write your code here
+        map<char, int> mp;//记录字符ch最后出现的位置
+        int ans = 0, tmp = 0;//tmp记录当前无重复串的长度
+        for(int i=0; i<s.size(); ++i){
+            if(mp.find(s[i]) == mp.end()){
+                ++tmp;
+                mp[s[i]] = i;
+                if(ans < tmp) ans = tmp;
+            } else {
+                int start = i-tmp;//无重复字符串的开始位置
+                if(mp[s[i]] >= start)
+                    tmp = i-mp[s[i]];
+                else 
+                    ++tmp;
+                mp[s[i]] = i;
+                if(ans < tmp) ans = tmp;
+            }
+        }
+        return ans;
+    }
+};
