@@ -1,0 +1,61 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/search-a-2d-matrix-ii/
+搜索二维矩阵 II 查看运行结果 
+
+写出一个高效的算法来搜索m×n矩阵中的值，返回这个值出现的次数。
+
+这个矩阵具有以下特性：
+
+每行中的整数从左到右是排序的。
+每一列的整数从上到下是排序的。
+在每一行或每一列中没有重复的整数。
+样例
+考虑下列矩阵：
+
+[
+
+    [1, 3, 5, 7],
+
+    [2, 4, 7, 8],
+
+    [3, 5, 9, 10]
+
+]
+
+给出target = 3，返回 2
+
+挑战
+要求O(m+n) 时间复杂度和O(1) 额外空间
+
+class Solution {
+public:
+    /**
+     * @param matrix: A list of lists of integers
+     * @param target: An integer you want to search in matrix
+     * @return: An integer indicate the total occurrence of target in the given matrix
+     */
+     
+    int ans; 
+    int n, m;
+    set<pair<int, int>>st;
+    void dfs(vector<vector<int> > &matrix, int t, int x, int y){
+        if(x >= n || y>=m || st.find(make_pair(x, y))!=st.end())  return;
+        st.insert(make_pair(x, y));
+        if(matrix[x][y] == t) ++ans;
+
+        if(matrix[x][y] <= t){
+            dfs(matrix, t, x+1, y);
+            dfs(matrix, t, x, y+1);
+        }
+    }
+    
+    int searchMatrix(vector<vector<int> > &matrix, int target) {
+        // write your code here
+        ans = 0;
+        st.clear();
+        n = matrix.size();
+        if(n != 0)
+            m = matrix[0].size();
+        dfs(matrix, target, 0, 0);
+        return ans;
+    }
+};
