@@ -1,0 +1,40 @@
+图是否是树 http://www.lintcode.com/zh-cn/problem/graph-valid-tree/#
+public class Solution {
+    private List[] edgesList;
+    private int[] vis;
+    private boolean judge(int x){
+        vis[x] = -1;
+        for(int i=0; i<edgesList[x].size(); ++i){
+            int y = (int)edgesList[x].get(i);
+            if(vis[y] == 0) {
+                if(!judge(y)) return false;
+            } else if(vis[y] == 1) {
+                return false;
+            }
+        }
+        vis[x] = 1;
+        return true;
+    }
+    /**
+     * @param n an integer
+     * @param edges a list of undirected edges
+     * @return true if it's a valid tree, or false
+     */
+    public boolean validTree(int n, int[][] edges) {
+        vis = new int[n];
+        edgesList = new ArrayList[n];
+        for(int i=0; i<n; ++i) edgesList[i] = new ArrayList();
+        for(int i=0; i<edges.length; ++i){
+            edgesList[edges[i][0]].add(edges[i][1]);
+            edgesList[edges[i][1]].add(edges[i][0]);
+        }
+        if(!judge(0)) return false;
+        boolean isTree = true;
+        for(int i=0; i<n; ++i)
+            if(vis[i] == 0) {
+                isTree = false;
+                break;
+            }
+        return isTree;
+    }
+}
