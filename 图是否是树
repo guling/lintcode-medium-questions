@@ -12,6 +12,7 @@
 
 给出n = 5 并且 edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], 返回 false.
 
+解法1
 public class Solution {
     private List[] edgesList;
     private int[] vis;
@@ -49,5 +50,60 @@ public class Solution {
                 break;
             }
         return isTree;
+    }
+}
+
+解法2
+public class Solution {
+    int[] f;
+    int[] cnt;
+    
+    private int getFather(int x){
+        if(x == f[x])
+            return f[x];
+        else
+            return f[x]=getFather(f[x]);
+        //return (x==f[x] ? f[x] : f[x] = getFather(f[x]));
+    }
+    
+    private boolean union(int x, int y){
+        int px = getFather(x);
+        int py = getFather(y);
+        if(px != py) {
+            if(cnt[px] > cnt[py]) {
+                f[py] = px;
+                ++cnt[px];
+            } else {
+                f[px] = py;
+                ++cnt[py];
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * @param n an integer
+     * @param edges a list of undirected edges
+     * @return true if it's a valid tree, or false
+     */
+    public boolean validTree(int n, int[][] edges) {
+        f = new int[n];
+        cnt = new int[n];
+        for(int i=0; i<n; ++i) {
+            cnt[i] = 0;
+            f[i] = i;
+        }
+        
+        for(int i=0; i<edges.length; ++i)
+            if(!union(edges[i][0], edges[i][1]))
+                return false;
+        
+        int node = 0;    
+        for(int i=0; i<n; ++i)
+            if(f[i] == i) 
+                ++node;
+        if(node == 1) return true;
+        return false;
     }
 }
