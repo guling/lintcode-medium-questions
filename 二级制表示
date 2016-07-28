@@ -1,0 +1,58 @@
+题目链接：http://www.lintcode.com/zh-cn/problem/binary-representation/?rand=true
+
+给定一个数将其转换为二进制（均用字符串表示），如果这个数的小数部分不能在 32 个字符之内来精确地表示，则返回 "ERROR"。
+您在真实的面试中是否遇到过这个题？
+样例
+
+n = "3.72", 返回 "ERROR".
+
+n = "3.5", 返回 "11.1".
+
+
+public class Solution {
+    /**
+     *@param n: Given a decimal number that is passed in as a string
+     *@return: A string
+     */
+    public String binaryRepresentation(String s) {
+        int pos = s.indexOf('.');
+        if(pos == -1) {
+            return parseStart(s);
+        } else {
+            String start = parseStart(s.substring(0, pos));
+            String end = parseEnd(s.substring(pos+1, s.length()));
+            if(end == null) return "ERROR";
+            else if(end.length() == 0) return start;
+            return start + "." + end;
+        }
+    }
+    
+    private String parseEnd(String s){
+        StringBuilder end = new StringBuilder();
+        double n =  Double.parseDouble("0."+s);
+        while(n > 1e-10){
+            n *= 2;
+            if(n < 1.0) {
+                end.append('0');
+            } else {
+                end.append('1');
+                n -= 1.0;
+            }
+            if(end.length() > 32) return null;
+        }
+        return end.toString();
+    }
+    
+    private String parseStart(String s){
+        StringBuilder start = new StringBuilder();
+        int n = Integer.parseInt(s);
+        while(n > 0) {
+            if(n%2 == 0) start.append('0');
+            else start.append('1');
+            n/=2;
+        }
+        if(start.length() == 0) return "0";
+        start.reverse();
+        return start.toString();
+    }
+}
