@@ -26,7 +26,43 @@ public class Solution {
 }
 
 方法2： 归并排序思想
-
+public class Solution {
+    /**
+     * @param A an array
+     * @return total of reverse pairs
+     */
+    public long reversePairs(int[] A) {
+        ans = 0;
+        merge(A, 0, A.length-1);
+        return ans;
+    }
+    
+    private long ans;
+    private void merge(int[] A, int ld, int rd){
+        if(ld >= rd) return;
+        int mid = (ld+rd)>>1;
+        merge(A, ld, mid);
+        merge(A, mid+1, rd);
+        int[] tmpA = new int[rd-ld+1];
+        int i, j, k;
+        for(i=ld, j=mid+1, k=0; i<=mid && j<=rd; ++k){
+            if(A[i] > A[j]) {
+                ans += (rd-j+1);
+                tmpA[k] = A[i];
+                ++i;
+            } else {
+                tmpA[k] = A[j];
+                ++j;
+            }
+        }
+        
+        for(; i<=mid; ++i) tmpA[k++] = A[i];
+        for(; j<=rd; ++j) tmpA[k++] = A[j];
+        
+        System.arraycopy(tmpA, 0, A, ld, k);
+        
+    }
+}
 
 方法3：树状数组
 
