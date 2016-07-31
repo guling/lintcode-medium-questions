@@ -65,4 +65,60 @@ public class Solution {
 }
 
 方法3：树状数组
-
+public class Solution {
+    /**
+     * @param A an array
+     * @return total of reverse pairs
+     */
+    
+    class Node implements Comparator<Node>{
+        public int x;
+        public int p;
+        public Node(int x, int p){
+            this.x = x;
+            this.p = p;
+        }
+        @Override
+    	public int compare(Node o1, Node o2) {
+    		return o1.x - o2.x;
+    	}
+    	
+    	public Node(){}
+    } 
+    
+    public long reversePairs(int[] A) {
+        Node[] nodes = new Node[A.length];
+        for(int i=0; i<A.length; ++i)
+            nodes[i] = new Node(A[i], i);
+        Arrays.sort(nodes, new Node());
+        T = new int[A.length+1];
+        long ans = 0;
+        for(int i=0; i<nodes.length; ++i) {
+            add(nodes[i].p+1, 1);
+            ans += sum(A.length)-sum(nodes[i].p+1);
+        }
+        return ans;
+    }
+    
+    private int[] T;
+    
+    private int lowbit(int x) {
+        return x&(-x);
+    }
+    
+    private void add(int x, int n){
+        while(x < T.length) {
+            T[x] += n;
+            x += lowbit(x);
+        }
+    }
+    
+    private int sum(int x) {
+        int tot = 0;
+        while(x > 0) {
+            tot += T[x];
+            x -= lowbit(x);
+        }
+        return tot;
+    }
+}
