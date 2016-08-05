@@ -1,0 +1,41 @@
+题目连接：http://www.lintcode.com/zh-cn/problem/house-robber-ii/
+
+在上次打劫完一条街道之后，窃贼又发现了一个新的可以打劫的地方，但这次所有的房子围成了一个圈，这就意味着第一间房子和最后一间房子是挨着的。每个房子都存放着特定金额的钱。你面临的唯一约束条件是：相邻的房子装着相互联系的防盗系统，且 当相邻的两个房子同一天被打劫时，该系统会自动报警。
+
+给定一个非负整数列表，表示每个房子中存放的钱， 算一算，如果今晚去打劫，你最多可以得到多少钱 在不触动报警装置的情况下。
+注意事项
+
+这题是House Robber的扩展，只不过是由直线变成了圈
+
+样例
+
+给出nums = [3,6,4], 返回　6，　你不能打劫3和4所在的房间，因为它们围成一个圈，是相邻的．
+
+
+public class Solution {
+    /**
+     * @param nums: An array of non-negative integers.
+     * return: The maximum amount of money you can rob tonight
+     */
+    public int houseRobber2(int[] a) {
+        // write your code here
+        if(a == null || a.length == 0) return 0;
+        if(a.length == 1) return a[0];
+        if(a.length == 2) return Math.max(a[0], a[1]);
+        
+        int[] dp1 = new int[a.length];
+        int[] dp2 = new int[a.length];
+        
+        dp1[0] = a[0];
+        dp1[1] = Math.max(a[0], a[1]);
+        for(int i=2; i<a.length-1; ++i)
+            dp1[i] = Math.max(dp1[i-2]+a[i], dp1[i-1]);
+        
+        dp2[1] = a[1];
+        dp2[2] = Math.max(a[1], a[2]);
+        for(int i=3; i<a.length; ++i)
+            dp2[i] = Math.max(dp2[i-2]+a[i], dp2[i-1]);
+        
+        return Math.max(dp1[a.length-2], dp2[a.length-1]);
+    }
+}
