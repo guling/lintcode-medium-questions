@@ -22,6 +22,10 @@
 1   3   1
 窃贼最多能偷窃的金钱数是 4 + 5 = 9.
 
+思路：房屋的排列是二叉树，如果父节点被选中，那么子节点一定不能被选中；如果父节点没有被选中，那么子节点就有选择和不选择的两种方案。
+
+优化：记忆化搜索，请看第二种解题代码。
+
 /**
  * Definition of TreeNode:
  * public class TreeNode {
@@ -30,6 +34,7 @@
  *     public TreeNode(int x) { val = x; }
  * }
  */
+ 
 public class Solution {
     /**
      * @param root: The root of binary tree.
@@ -47,6 +52,50 @@ public class Solution {
             int robberLeft = Math.max(search(root.left, !robber), search(root.left, robber));
             int robberRight = Math.max(search(root.right, !robber), search(root.right, robber));
             return robberLeft+robberRight;
+        }
+    }
+}
+
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    /**
+     * @param root: The root of binary tree.
+     * @return: The maximum amount of money you can rob tonight
+     */
+    public int houseRobber3(TreeNode root) {
+        yesRobber = new HashMap<>();
+        noRobber = new HashMap<>();
+        return Math.max(search(root, true), search(root, false));
+    }
+    
+    private Map<TreeNode, Integer> yesRobber;
+    private Map<TreeNode, Integer> noRobber;
+    
+    private int search(TreeNode root, boolean robber) {
+        if(root == null) return 0;
+        if(robber && yesRobber.containsKey(root))
+            return yesRobber.get(root);
+        
+        if(!robber && noRobber.containsKey(root))
+            return noRobber.get(root);
+            
+        if(robber) {//子节点不能选了
+            int robberVal = root.val + search(root.left, !robber) + search(root.right, !robber);
+            yesRobber.put(root, robberVal);
+            return robberVal;
+        } else {//子节点有选和不选的权利
+            int robberLeft = Math.max(search(root.left, !robber), search(root.left, robber));
+            int robberRight = Math.max(search(root.right, !robber), search(root.right, robber));
+            int noRobberVal = robberLeft+robberRight;
+            noRobber.put(root, noRobberVal);
+            return noRobberVal;
         }
     }
 }
