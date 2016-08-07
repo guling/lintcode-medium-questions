@@ -1,0 +1,52 @@
+在上次打劫完一条街道之后和一圈房屋之后，窃贼又发现了一个新的可以打劫的地方，但这次所有的房子组成的区域比较奇怪，聪明的窃贼考察地形之后，发现这次的地形是一颗二叉树。与前两次偷窃相似的是每个房子都存放着特定金额的钱。你面临的唯一约束条件是：相邻的房子装着相互联系的防盗系统，且当相邻的两个房子同一天被打劫时，该系统会自动报警。
+
+算一算，如果今晚去打劫，你最多可以得到多少钱，当然在不触动报警装置的情况下。
+
+ 注意事项
+
+这题是House Robber和House Robber II的扩展，只不过这次地形由直线和圈变成了二叉树
+
+您在真实的面试中是否遇到过这个题？ Yes
+样例
+  3
+ / \
+2   3
+ \   \ 
+  3   1
+窃贼最多能偷窃的金钱数是 3 + 3 + 1 = 7.
+
+    3
+   / \
+  4   5
+ / \   \ 
+1   3   1
+窃贼最多能偷窃的金钱数是 4 + 5 = 9.
+
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    /**
+     * @param root: The root of binary tree.
+     * @return: The maximum amount of money you can rob tonight
+     */
+    public int houseRobber3(TreeNode root) {
+        return Math.max(search(root, true), search(root, false));
+    }
+    
+    private int search(TreeNode root, boolean robber) {
+        if(root == null) return 0;
+        if(robber) {//子节点不能选了
+            return root.val + search(root.left, !robber) + search(root.right, !robber);
+        } else {//子节点有选和不选的权利
+            int robberLeft = Math.max(search(root.left, !robber), search(root.left, robber));
+            int robberRight = Math.max(search(root.right, !robber), search(root.right, robber));
+            return robberLeft+robberRight;
+        }
+    }
+}
